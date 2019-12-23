@@ -7,7 +7,7 @@
 ### A script which when given a longitude, latitude and zoom level downloads a
 ### high resolution google map
 
-import urllib.request
+import urllib3
 from PIL import Image
 import os
 import math
@@ -32,8 +32,17 @@ def generateImage(lat,lng,map_tile_width,map_tile_height,zoom,scale,apikey,forma
                 url = 'https://maps.googleapis.com/maps/api/staticmap?key='+apikey+'&scale='+str(scale)+'&center='+str(final_lat)+','+str(final_long)+'&zoom='+str(zoom)+'&format='+format_image+'&maptype='+maptype+'&style='+style+'&size='+str(size_tile_x)+'x'+str(size_tile_y)
                 print(url)
                 current_tile = str(x)+'-'+str(y)
-                urllib.request.urlretrieve(url, current_tile)            
-                im = Image.open(current_tile)
+		http = urllib3.PoolManager()
+		r = http.request('GET', url, preload_content=False)
+		with open(current_tile, 'wb') as out_file:
+			while True:
+				data = r.read(64)
+				if not data:
+					break
+				out_file.write(data)
+		im = Image.open(current_tile)
+		r.release_conn()
+              
                 # Removes bottom of the image
                 im = im.crop((0, 0, tilesize_width, tilesize_height-(50*scale)))
                 #If you want to download all tiles manually 

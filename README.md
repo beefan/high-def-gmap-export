@@ -1,4 +1,7 @@
 # Printing high-res customizable world map posters with Google Maps and Python
+### Dec. 2019 Update Notes
+
+This project is almost entirely kuboris's code. Forked and updated to use urllib3 for those who stumble upon this project (as I did) and find that urllib is deprecated on their machine.
 
 ### Fair use Warning:
 
@@ -71,7 +74,7 @@ Requirements Python 3 + Image.
 
 ```
 #!/usr/bin/python
-    import urllib.request
+    import urllib3
     from PIL import Image
     import os
     import math
